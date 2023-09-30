@@ -3,6 +3,10 @@ import configparser
 from appium.options.ios import XCUITestOptions
 from appium.options.android import UiAutomator2Options
 from selenium.webdriver.chrome.options import Options as WebChromeOptions
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium import webdriver as selenium_webdriver
+from appium import webdriver as appium_driver
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 def get_config(file_name:str)-> configparser.ConfigParser:
@@ -11,6 +15,10 @@ def get_config(file_name:str)-> configparser.ConfigParser:
     ini_file_path = "./resources/"+ file_name + ".ini"
     config.read(ini_file_path)
     return config
+
+def url_manager(platform:str)->str:
+    if platform != "pc_web":
+        return "http://0.0.0.0:4723"
 
 def desired_caps_manager(platform:str):
     options = None
@@ -52,7 +60,7 @@ def desired_caps_manager(platform:str):
         options.device_name = desired_caps["DEVICE_NAME"]
         options.set_capability("browserName", desired_caps["BROWSER_NAME"])
 
-    else: #WEB
+    else: #pc_web
         options = WebChromeOptions()
         desired_caps = get_config("desired_capabilities")["WEB"]
 
@@ -62,3 +70,13 @@ def desired_caps_manager(platform:str):
 
     return options
 
+def driver_factory(platform:str):
+    if platform == "pc_web":
+        return selenium_webdriver.Chrome(
+            options=desired_caps_manager(platform),
+            service=ChromeService(ChromeDriverManager().install())
+        )
+    else:
+        return appium_driver.Remote(
+            url_manager(platform),options=desired_caps_manager(platform)
+        )
