@@ -8,3 +8,4 @@ class WebPageFactory(PageFactory):
 
     def refresh_window(self):
         self.driver.refresh()
+
