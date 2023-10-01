@@ -26,24 +26,24 @@ class PageFactory:
         return self.wait.until(EC.visibility_of_all_elements_located(locator))
 
     def _get_text(self, locator: tuple) -> str:
-        return self.__find_element_for_wait(locator).text
+        return self._find_element_for_wait(locator).text
 
     def _input(self, locator: tuple, text: str):
-        input_element = self.__find_element_for_wait(locator)
+        input_element = self._find_element_for_wait(locator)
         input_element.clear()
         input_element.send_keys(text)
 
     def _click(self, locator: tuple):
-        self.__find_element_for_wait(locator).click()
+        self._find_element_for_wait(locator).click()
 
     def _is_visible(self, locator: tuple) -> bool:
         try:
-            return self.__find_element_for_wait(locator).is_displayed()
+            return self._find_element_for_wait(locator).is_displayed()
         except TimeoutException:
             return False
 
     def _get_select_tag_element(self, locator: tuple) -> Select:
-        return Select(self.__find_element_for_wait(locator))
+        return Select(self._find_element_for_wait(locator))
 
     def _scroll_up_on_mobile(self, start_position: float = 0.7, end_position: float = 0.3):
         size = self.driver.get_window_size()
@@ -64,7 +64,7 @@ class PageFactory:
         self.driver.swipe(start_x, end_y, start_x, start_y, 600)
 
     def _click_using_javascript_executor(self, locator: tuple):
-        element = self.__find_element_for_wait(locator)
+        element = self._find_element_for_wait(locator)
         self.driver.execute_script("arguments[0].click();", element)
 
     def _change_window_taps(self, tap_index: int):
