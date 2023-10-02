@@ -53,7 +53,7 @@ def desired_caps_manager(platform:str):
 
     elif platform == "android_chrome":
         options = UiAutomator2Options()
-        desired_caps = get_config("desired_capabilities")["ANDROID"]
+        desired_caps = get_config("desired_capabilities")["ANDROID_CHROME"]
 
         options.platform_name = desired_caps["PLATFORM_NAME"]
         options.automation_name = desired_caps["AUTOMATION_NAME"]
