@@ -75,3 +75,6 @@ class PageFactory:
 
     def _convert_string_to_int(self, text: str) -> int:
         return int(re.sub(r"[^0-9]", "", text))
+
+    def _pull_to_refresh_on_mobile(self):
+        self._scroll_up_on_mobile(0.9, 0.3)
