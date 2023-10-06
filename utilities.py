@@ -1,4 +1,5 @@
 import configparser
+import logging
 
 from appium.options.ios import XCUITestOptions
 from appium.options.android import UiAutomator2Options
@@ -80,3 +81,10 @@ def driver_factory(platform:str):
         return appium_driver.Remote(
             url_manager(platform),options=desired_caps_manager(platform)
         )
+
+
+def get_logger(class_name:str)->logging.Logger:
+    logger = logging.getLogger(class_name)
+    logger.setLevel(logging.INFO)
+
+    return logger
