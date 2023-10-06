@@ -7,11 +7,14 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 import selenium.webdriver.support.expected_conditions as EC
 
+from utilities import get_logger
+
 
 class PageFactory:
     def __init__(self, driver):
         self.driver: Remote = driver
         self.wait = WebDriverWait(driver, 10)
+        self.logger = get_logger(type(self).__name__)
 
     def _find_element(self, locator: tuple) -> WebElement:
         return self.driver.find_element(*locator)
@@ -72,3 +75,6 @@ class PageFactory:
 
     def _convert_string_to_int(self, text: str) -> int:
         return int(re.sub(r"[^0-9]", "", text))
+
+    def _pull_to_refresh_on_mobile(self):
+        self._scroll_up_on_mobile(0.9, 0.3)
