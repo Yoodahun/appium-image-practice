@@ -8,6 +8,7 @@ class NaverHomePage(WebPageFactory, NaverHomePageLocator):
         self.driver = driver
 
     def check_shortcut_area_is_visible(self)->bool:
+
         return self._is_visible(self.SHORTCUT_AREA)
 
     def search_text(self, text:str):
