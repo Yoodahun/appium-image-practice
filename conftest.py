@@ -15,6 +15,14 @@ def pytest_addoption(parser):
         "--platform", default="pc_web", action="store", help="pc/android/ios/android_chrome/ios_safari"
     )
 
+@pytest.fixture(scope="session")
+def print_for_testcase(request) -> str:
+    platform = request.config.getoption('platform').upper()
+
+    print("this is fixture method for session-----")
+
+    return platform
+
 @pytest.fixture(scope="class", autouse=True)
 def setup_and_teardown(request) -> webdriver:
 
