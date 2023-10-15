@@ -3,22 +3,26 @@ from typing import List
 
 from appium.webdriver import Remote, WebElement
 from selenium.common import TimeoutException
+from selenium.webdriver import ActionChains
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 import selenium.webdriver.support.expected_conditions as EC
 
-from utilities import get_logger
+from utilities import logger_factory
 
 
 class PageFactory:
     """
     PageFactory 클래스는 페이지들에서 수행해야할 기본적인 행위들을 정의합니다.
+    생성자에서는 드라이버, wait, action, logger 객체를 생성합니다.
+    wait 객체는 기본 대기시간 10초입니다.
 
     """
     def __init__(self, driver):
         self.driver: Remote = driver
         self.wait = WebDriverWait(driver, 10)
-        self.logger = get_logger(type(self).__name__)
+        self.action = ActionChains(self.driver)
+        self.logger = logger_factory(type(self).__name__)
 
     def _find_element(self, locator: tuple) -> WebElement:
         """
