@@ -1,3 +1,6 @@
+import base64
+import os
+import shutil
 import re
 from typing import List
 
@@ -18,6 +21,7 @@ class PageFactory:
     wait 객체는 기본 대기시간 10초입니다.
 
     """
+
     def __init__(self, driver):
         self.driver: Remote = driver
         self.wait = WebDriverWait(driver, 10)
@@ -111,7 +115,9 @@ class PageFactory:
         """
         return Select(self._find_element_for_wait(locator))
 
-    def _scroll_up_on_mobile(self, start_position: float = 0.7, end_position: float = 0.3):
+    def _scroll_up_on_mobile(
+        self, start_position: float = 0.7, end_position: float = 0.3
+    ):
         """
         모바일단말기의 화면에서, 단말기의 윈도우사이즈를 계산한다음 화면을 위로 스크롤합니다.
         기본값은 시작위치는 화면 상단으로부터 70%아래에 위치한 부분, 종료위치는 화면 상단으로부터 30% 아래에 위치한 부분입니다.
@@ -128,7 +134,9 @@ class PageFactory:
 
         self.driver.swipe(start_x, start_y, start_x, end_y, 600)
 
-    def _scroll_down_on_mobile(self, start_position: float = 0.7, end_position: float = 0.3):
+    def _scroll_down_on_mobile(
+        self, start_position: float = 0.7, end_position: float = 0.3
+    ):
         """
         모바일단말기의 화면에서, 단말기의 윈도우사이즈를 계산한다음 화면을 위로 스크롤합니다.
         기본값은 시작위치는 화면 상단으로부터 30%아래에 위치한 부분, 종료위치는 화면 상단으로부터 70% 아래에 위치한 부분입니다.
@@ -177,3 +185,34 @@ class PageFactory:
         :return:
         """
         self._scroll_up_on_mobile(0.9, 0.3)
+
+    def check_visual_quality(self, screen_name: str):
+        current_working_path = os.getcwd()
+        resource_dir_path = os.path.join(
+            current_working_path,
+            "resources",
+        )
+
+        baseline_dir = os.path.join(resource_dir_path, "baseline_screenshots")
+        fail_screenshot_dir = os.path.join(resource_dir_path, "fail_screenshots")
+
+        base_img_path = baseline_dir + "/" + screen_name + ".png"
+        actual_screen = self.driver.get_screenshot_as_base64()
+
+        if os.path.exists(base_img_path):
+            with open(base_img_path, "rb") as img:
+                base_img = base64.b64encode(img.read()).decode("ascii")
+
+            results = self.driver.get_images_similarity(
+                base64_image1=base_img, base64_image2=actual_screen, visualize=True
+            )
+
+            if results["score"] < 0.99:
+                image_diff_path = os.path.join(
+                    fail_screenshot_dir, "FAIL_" + screen_name + ".png"
+                )
+                with open(image_diff_path, "wb") as f:
+                    f.write(base64.b64decode(results["visualization"]))
+
+        else:
+            self.driver.save_screenshot(base_img_path)

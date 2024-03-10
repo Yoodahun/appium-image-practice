@@ -9,6 +9,7 @@ class TestNaver:
     def test_naver_home(self):
         self.naver_home_page = NaverHomePage(self.driver)
         assert self.naver_home_page.check_shortcut_area_is_visible()
+        self.naver_home_page.check_visual_quality("homepage")
         pytest.search_keyword = "이것은 셀레니움 테스트 코드 입니다."
         self.naver_home_page.search_text(pytest.search_keyword)
 
